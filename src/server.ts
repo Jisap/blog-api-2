@@ -61,4 +61,16 @@ app.use(limiter);        // Rate limiting
   }
 })()
 
+const handleServerShutdown = async () => {
+  try {
+    console.log('Server SHUTDOWN');
+    process.exit(0);
+  } catch (error) {
+    console.log('Failed to shutdown the server', error);
+    process.exit(1);
+  }
+}
+
+process.on('SIGINT', handleServerShutdown); // Ctrl + C
+process.on('SIGTERM', handleServerShutdown);// Cierre atraves una herramienta de administración
 
