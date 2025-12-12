@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
 
 export interface IUser {
   username: string;
@@ -82,6 +83,18 @@ const userSchema = new Schema<IUser>(
   }, {
   timestamps: true
 }
-)
+);
+
+// Define un "hook" que se ejecutará ANTES del evento 'save' en cualquier documento de este esquema.
+// 'this' se refiere al documento de usuario que está a punto de ser guardado.
+// 'isModified('password')' comprueba si el campo 'password' ha sido modificado.
+
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) {                        // Si se actualiza algún campo distinto a 'password'
+    return;                                                  // no se ejecuta el hash de la contraseña 
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);     // Si se actualiza el campo 'password', se ejecuta el hash de la contraseña
+});
 
 export default model<IUser>('User', userSchema)
