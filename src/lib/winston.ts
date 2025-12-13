@@ -28,7 +28,7 @@ if (config.NODE_ENV !== 'production') {                                         
         align(),                                                                             // Alinea el mensaje del log para una mejor legibilidad.
         printf(({ timestamp, level, message, ...meta }) => {                                 // Define un formato personalizado para el mensaje del log. 
           const metaStr = Object.keys(meta).length ? `\n${JSON.stringify(meta)}` : '';       // Si hay metadatos adicionales(meta), los convierte a una cadena JSON y los agrega.
-          return `${timestamp} [${level.toUpperCase()}]: ${message}${metaStr}`;              // Retorna el mensaje formateado: [marca de tiempo] [NIVEL_MAYÚSCULAS]: mensaje [metadatos].
+          return `${timestamp} [${level}]: ${message}${metaStr}`;                             // Retorna el mensaje formateado: [marca de tiempo] [NIVEL]: mensaje [metadatos].
         })
       )
     })
