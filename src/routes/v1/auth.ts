@@ -6,6 +6,8 @@ import { body, cookie } from "express-validator";
 import validationError from "@/middlewares/validationError";
 import User from "@/models/user";
 import bcrypt from "bcrypt";
+import logout from "@/controllers/v1/auth/logout";
+import authenticate from "@/middlewares/authenticate";
 
 
 const router = Router();
@@ -93,6 +95,12 @@ router.post(
     .withMessage('Invalid refresh token'),
   validationError,
   refreshToken
+);
+
+router.post(
+  '/logout',
+  authenticate,
+  logout
 )
 
 export default router;
