@@ -12,11 +12,11 @@ type UserData = Pick<IUser, 'email' | 'password' | 'role'>;
 
 const login = async (req: Request, res: Response): Promise<void> => {
 
-  const { email } = req.body as UserData;                                      // Desestructuramos del body de la solicitud el email
+  const { email } = req.body as UserData;                                           // Desestructuramos del body de la solicitud el email
 
   try {
 
-    const user = await User.findOne({ email })                                   // Buscamos el usuario en la base de datos
+    const user = await User.findOne({ email })                                      // Buscamos el usuario en la base de datos
       .select('username email password role')
       .lean()
       .exec()
