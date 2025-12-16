@@ -19,7 +19,9 @@ const config = {
   REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY as ms.StringValue,
   WHITELIST_ADMINS_MAIL: [
     'admin@gmail.com'
-  ]
+  ],
+  defaultResLimit: 20,
+  defaultResOffset: 0,
 }
 
 export default config
