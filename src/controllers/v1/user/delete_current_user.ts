@@ -3,7 +3,7 @@ import User from "@/models/user";
 import type { Request, Response } from "express";
 
 
-const deleteCurrentUser = async (req: Request, res: Response) => {
+const deleteCurrentUser = async (req: Request, res: Response) => {  // Ideal para que el usuario pueda eliminar su propia cuenta
   const userId = req.userId;
 
   try {
