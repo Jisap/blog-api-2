@@ -1,3 +1,4 @@
+import { genSlug } from "@/utils";
 import { model, Schema, Types } from "mongoose";
 
 export interface IBlog {
@@ -78,5 +79,11 @@ const blogSchema = new Schema<IBlog>(
     },
   }, { timestamps: { createdAt: "publishedAt" } }
 );
+
+blogSchema.pre("validate", function (next) {  // Antes de guardar el blog
+  if (this.title && "this.slug") {            // Si el titulo y el slug existen
+    this.slug = genSlug(this.title);        // Genera el slug
+  }
+})
 
 export default model<IBlog>("Blog", blogSchema);
