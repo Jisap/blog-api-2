@@ -10,14 +10,14 @@ import type { UploadApiErrorResponse } from "cloudinary";
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2Mb
 
 
-const uploadBlogBanner = (method: "post" | "put") => {
+const uploadBlogBanner = (method: "post" | "put") => {                    // Recibe el metodo post o put
   return async (req: Request, res: Response, next: NextFunction) => {
-    if (method === "put" && !req.file) {
-      next();
+    if (method === "put" && !req.file) {                                  // Si el metodo es put y no hay archivo de imagen nueva se salta la lógica de subida de imagen
+      next();                                                             // De lo que se trata es de actualizar el resto del content pero no la imagen
       return;
     }
 
-    if (!req.file) {
+    if (!req.file) {                                                      // Encaso de que estemos en el método post y no haya archivo de imagen nueva -> error
       res.status(400).json({
         code: "ValidationError",
         message: "Banner image is required"
@@ -25,7 +25,7 @@ const uploadBlogBanner = (method: "post" | "put") => {
       return
     }
 
-    if (req.file.size > MAX_FILE_SIZE) {
+    if (req.file.size > MAX_FILE_SIZE) {                                  // Si si existe el archivo de imagen pero es mayor a 2MB -> error
       res.status(413).json({
         code: "ValidationError",
         message: "Banner image size should be less than 2MB"
@@ -37,7 +37,7 @@ const uploadBlogBanner = (method: "post" | "put") => {
       //const { blogId } = req.params;
       //const blog = await Blog.findById(blogId).select("banner.publicId").exec();
 
-      const data = await uploadToCloudinary(
+      const data = await uploadToCloudinary(                              // Si tenemos el archivo de imagen y cumple los requisitos -> subimos a cloudinary
         req.file.buffer,
         //blog?.banner.publicId.replace("blog-api", "")
       )

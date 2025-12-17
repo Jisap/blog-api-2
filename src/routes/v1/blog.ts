@@ -18,8 +18,8 @@ router.post(
   "/",
   authenticate,
   authorize(['user', 'admin']),
-  upload.single("banner_image"),
-  uploadBlogBanner("post"),
+  upload.single("banner_image"), // multer guarda en el buffer la imagen y se la pasa al middleware uploadBlogBanner
+  uploadBlogBanner("post"),      // uploadBlogBanner es un middleware que sube la imagen a cloudinary
   body("title")
     .trim()
     .notEmpty()
