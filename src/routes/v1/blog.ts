@@ -1,18 +1,16 @@
 import createBlog from "@/controllers/v1/blog/create_blog";
-import deleteCurrentUser from "@/controllers/v1/user/delete_current_user";
-import deleteUser from "@/controllers/v1/user/delete_user";
-import getAllUser from "@/controllers/v1/user/get_all_user";
-import getCurrentUser from "@/controllers/v1/user/get_current_user";
-import getUser from "@/controllers/v1/user/get_user";
-import updateCurrentUser from "@/controllers/v1/user/update_current_user";
 import authenticate from "@/middlewares/authenticate";
 import authorize from "@/middlewares/authorize";
+import uploadBlogBanner from "@/middlewares/uploadBlogBanner";
 import validationError from "@/middlewares/validationError";
 import user from "@/models/user";
 import { Router } from "express";
 import { body, param, query } from "express-validator";
+import multer from "multer";
 
 
+
+const upload = multer();
 
 const router = Router();
 
@@ -20,6 +18,23 @@ router.post(
   "/",
   authenticate,
   authorize(['user', 'admin']),
+  upload.single("banner_image"),
+  uploadBlogBanner("post"),
+  body("title")
+    .trim()
+    .notEmpty()
+    .withMessage("Title is required")
+    .isLength({ max: 180 })
+    .withMessage("Title must be less than 180 characters"),
+  body("content")
+    .trim()
+    .notEmpty()
+    .withMessage("Content is required"),
+  body("status")
+    .optional()
+    .isIn(["draft", "published"])
+    .withMessage("Status must be 'draft' or 'published'"),
+  validationError,
   createBlog
 );
 
