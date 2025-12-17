@@ -15,7 +15,7 @@ export interface IBlog {
   viewsCount: number;
   likesCount: number;
   commentsCount: number;
-  status: "Draft" | "Published";
+  status: "draft" | "published";
 }
 
 const blogSchema = new Schema<IBlog>(
@@ -72,18 +72,20 @@ const blogSchema = new Schema<IBlog>(
     status: {
       type: String,
       enum: {
-        values: ["Draft", "Published"],
+        values: ["draft", "published"],
         message: '{VALUE} is not supported',
       },
-      default: "Draft",
+      default: "draft",
     },
   }, { timestamps: { createdAt: "publishedAt" } }
 );
 
-blogSchema.pre("validate", function (next) {  // Antes de guardar el blog
-  if (this.title && "this.slug") {            // Si el titulo y el slug existen
-    this.slug = genSlug(this.title);        // Genera el slug
+blogSchema.pre("validate", async function () {      // Antes de guardar el blog
+  if (this.title && !this.slug) {                   // Si el titulo existe pero el slug no 
+    this.slug = genSlug(this.title);                // Genera el slug 
   }
+
+  // No es necesario llamar a next() ya que el middleware es async. Mogoose detecta automaticamente si devuelves una promesa.
 })
 
 export default model<IBlog>("Blog", blogSchema);
