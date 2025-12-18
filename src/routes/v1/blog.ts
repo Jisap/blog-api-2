@@ -1,6 +1,6 @@
 import createBlog from "@/controllers/v1/blog/create_blog";
 import getAllBlogs from "@/controllers/v1/blog/get_all_blogs";
-import getBlogsBySlug from "@/controllers/v1/blog/get_blog_by_slug";
+import getBlogBySlug from "@/controllers/v1/blog/get_blog_by_slug";
 import getBlogsByUser from "@/controllers/v1/blog/get_blogs_by_user";
 import authenticate from "@/middlewares/authenticate";
 import authorize from "@/middlewares/authorize";
@@ -83,7 +83,7 @@ router.get(
     .notEmpty()
     .withMessage('Slug is required'),
   validationError,
-  getBlogsBySlug
+  getBlogBySlug
 )
 
 

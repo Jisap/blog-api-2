@@ -12,7 +12,7 @@ interface QueryType {
 
 
 
-const getBlogsBySlug = async (req: Request, res: Response) => {
+const getBlogBySlug = async (req: Request, res: Response) => {
 
   try {
     const userId = req.userId;     // Usuario que está haciendo la petición
@@ -69,4 +69,4 @@ const getBlogsBySlug = async (req: Request, res: Response) => {
   }
 };
 
-export default getBlogsBySlug
+export default getBlogBySlug
