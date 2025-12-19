@@ -1,9 +1,6 @@
 import { logger } from '@/lib/winston';
-import DOMPurify from 'dompurify';
-import { JSDOM } from 'jsdom';
 import type { Request, Response } from 'express';
 import Blog from '@/models/Blog';
-import type { IBlog } from '@/models/Blog';
 import Like from '@/models/like';
 
 
