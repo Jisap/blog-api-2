@@ -22,7 +22,7 @@ const getCommentsByBlog = async (req: Request, res: Response) => {
     const allComments = await Comment.find({ blogId }).sort({ createdAt: -1 }).lean().exec();
 
     return res.status(201).json({
-      allComments
+      comments: allComments
     });
 
   } catch (error) {
