@@ -27,7 +27,8 @@ const corsOptions: CorsOptions = {
       callback(new Error(`CORS error: ${origin} is not allowed by CORS`), false);
       logger.warn(`CORS error: ${origin} is not allowed by CORS`)
     }
-  }
+  },
+  credentials: true
 }
 
 app.use(cors(corsOptions));
@@ -79,4 +80,3 @@ const handleServerShutdown = async () => {
 
 process.on('SIGINT', handleServerShutdown); // Ctrl + C
 process.on('SIGTERM', handleServerShutdown);// Cierre atraves una herramienta de administración
-
