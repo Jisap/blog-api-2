@@ -8,6 +8,7 @@ import unlikeBlog from "@/controllers/v1/like/unlike_blog";
 import commentBlog from "@/controllers/v1/comment/comment_blog";
 import getCommentsByBlog from "@/controllers/v1/comment/get_comments_by_blog";
 import deleteComment from "@/controllers/v1/comment/delete_coment";
+import getComments from "@/controllers/v1/comment/get_comments";
 
 
 const router = Router();
@@ -26,6 +27,8 @@ router.post(
   validationError,
   commentBlog
 );
+
+router.get('/', authenticate, authorize(['admin']), getComments);
 
 router.get(
   '/blog/:blogId',
