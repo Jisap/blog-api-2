@@ -4,6 +4,7 @@ import { JSDOM } from 'jsdom';
 import type { Request, Response } from 'express';
 import Blog from '@/models/Blog';
 import User from '@/models/user';
+import mongoose from 'mongoose';
 import type { IBlog } from '@/models/Blog';
 
 
@@ -15,17 +16,32 @@ const purify = DOMPurify(window);    // DOMPurify se usa para limpiar HTML y pre
 
 const updateBlog = async (req: Request, res: Response) => {
 
-
-
   try {
     const { title, content, banner, status }: BlogData = req.body as BlogData;
     const userId = req.userId;
-    const blogId = req.params.blogId;
+    const blogId = req.params.blogId.trim();
+
+    logger.info(`[UpdateBlog] Request received. BlogId: '${blogId}', UserId: '${userId}'`);
+
+    if (!mongoose.Types.ObjectId.isValid(blogId)) {
+      return res.status(400).json({
+        code: "BadRequest",
+        message: "Invalid blog ID format"
+      });
+    }
+
+    if (!userId) {
+      return res.status(401).json({
+        code: "Unauthorized",
+        message: "User ID missing in request"
+      });
+    }
 
     const user = await User.findById(userId).select('role').exec();                 // Usuario que hace la petición (actualización del blog)
     const blog = await Blog.findById(blogId).select('-__v').exec();                 // Blog que se va a actualizar
-
+    
     if (!blog) {
+      logger.warn(`[UpdateBlog] Blog not found in DB with ID: '${blogId}'`);
       res.status(404).json({
         code: "NotFoundError",
         message: "Blog not found"
@@ -33,7 +49,7 @@ const updateBlog = async (req: Request, res: Response) => {
       return;
     }
 
-    if (blog.author !== userId && user?.role !== 'admin') {
+    if (blog.author.toString() !== userId?.toString() && user?.role !== 'admin') {
       res.status(403).json({
         code: "AuthorizationError",
         message: "Access denied, insufficient permision"

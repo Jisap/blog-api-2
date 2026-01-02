@@ -23,6 +23,7 @@ router.post(
   authenticate,
   authorize(['admin']),
   upload.single("banner_image"), // multer guarda en el buffer la imagen y se la pasa al middleware uploadBlogBanner
+  uploadBlogBanner("post"),      // uploadBlogBanner es un middleware que sube la imagen a cloudinary
   body("title")
     .trim()
     .notEmpty()
@@ -38,14 +39,11 @@ router.post(
     .isIn(["draft", "published"])
     .withMessage("Status must be 'draft' or 'published'"),
   validationError,
-  uploadBlogBanner("post"),      // uploadBlogBanner es un middleware que sube la imagen a cloudinary
   createBlog
 );
 
 router.get(
   '/',
-  //authenticate,
-  //authorize(['admin']),
   query('limit')
     .optional()
     .isInt({ min: 1, max: 50 })
@@ -60,8 +58,6 @@ router.get(
 
 router.get(
   '/user/:userId',
-  //authenticate,
-  authorize(['admin']),
   param('userId')
     .isMongoId()
     .withMessage('Invalid user ID'),
@@ -77,37 +73,39 @@ router.get(
   getBlogsByUser
 );
 
+
+
+router.put(
+  '/:blogId',
+  authenticate,
+  //authorize(['admin']),
+  upload.single('banner_image'),
+  param('blogId')
+    .trim()
+    .isMongoId()
+    .withMessage('Invalid blog ID'),
+  body('title')
+    .optional()
+    .isLength({ max: 180 })
+    .withMessage('Title must be less than 180 characters'),
+  body('content')
+    .optional(),
+  body('status')
+    .optional()
+    .isIn(['draft', 'published'])
+    .withMessage('Status must be "draft" or "published"'),
+  uploadBlogBanner('put'),
+  validationError,
+  updateBlog
+);
+
 router.get(
   '/:slug',
-  //authenticate,
-  authorize(['admin', 'user']),
   param('slug')
     .notEmpty()
     .withMessage('Slug is required'),
   validationError,
   getBlogBySlug
-);
-
-router.put(
-  '/:blogId',
-  authenticate,
-  authorize(['admin']),
-  param('blogId')
-    .isMongoId()
-    .withMessage('Invalid blog ID'),
-  upload.single('banner_image'),
-  body('title')
-    .optional()
-    .isLength({ max: 180 })
-    .withMessage('Title must be less than 180 characters'),
-  body('content'),
-  body('status')
-    .optional()
-    .isIn(['draft', 'published'])
-    .withMessage('Status must be "draft" or "published"'),
-  validationError,
-  uploadBlogBanner('put'),
-  updateBlog
 );
 
 router.delete(
